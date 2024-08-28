@@ -1,10 +1,14 @@
 package main
 
 import (
+	"embed"
 	"math/rand/v2"
 
 	"github.com/eihigh/miniten"
 )
+
+//go:embed public/*.png
+var fsys embed.FS
 
 var (
 	x             = 200.0
@@ -48,16 +52,16 @@ func draw() {
 }
 
 func drawTitle() {
-	miniten.DrawImage("public/sky.png", 0, 0)
+	miniten.DrawImageFS(fsys, "public/sky.png", 0, 0)
 	miniten.Println("クリックしてスタート")
-	miniten.DrawImage("public/player.png", int(x), int(y))
+	miniten.DrawImageFS(fsys, "public/player.png", int(x), int(y))
 	if isJustClicked {
 		scene = "game"
 	}
 }
 
 func drawGame() {
-	miniten.DrawImage("public/sky.png", 0, 0)
+	miniten.DrawImageFS(fsys, "public/sky.png", 0, 0)
 	for i, wallX := range wallXs {
 		if wallX < int(x) {
 			score = i + 1
@@ -70,7 +74,7 @@ func drawGame() {
 	}
 	vy += g
 	y += vy
-	miniten.DrawImage("public/player.png", int(x), int(y))
+	miniten.DrawImageFS(fsys, "public/player.png", int(x), int(y))
 
 	frames += 1
 	// interval フレームごとに壁を追加
@@ -87,9 +91,9 @@ func drawGame() {
 	for i := range wallXs {
 		wallX := wallXs[i]
 		holeY := holeYs[i]
-		miniten.DrawImage("public/wall.png", wallX, holeY-wallHeight)
+		miniten.DrawImageFS(fsys, "public/wall.png", wallX, holeY-wallHeight)
 
-		miniten.DrawImage("public/wall.png", wallX, holeY+holeHeight)
+		miniten.DrawImageFS(fsys, "public/wall.png", wallX, holeY+holeHeight)
 
 		playerLeft := int(x)
 		playerTop := int(y)
@@ -134,16 +138,16 @@ func drawGame() {
 }
 
 func drawGameOver() {
-	miniten.DrawImage("public/sky.png", 0, 0)
+	miniten.DrawImageFS(fsys, "public/sky.png", 0, 0)
 
-	miniten.DrawImage("public/player.png", int(x), int(y))
+	miniten.DrawImageFS(fsys, "public/player.png", int(x), int(y))
 
 	for i := range wallXs {
 		wallX := wallXs[i]
 		holeY := holeYs[i]
 
-		miniten.DrawImage("public/wall.png", wallX, holeY-wallHeight)
-		miniten.DrawImage("public/wall.png", wallX, holeY+holeHeight)
+		miniten.DrawImageFS(fsys, "public/wall.png", wallX, holeY-wallHeight)
+		miniten.DrawImageFS(fsys, "public/wall.png", wallX, holeY+holeHeight)
 	}
 
 	miniten.Println("Game Over")
